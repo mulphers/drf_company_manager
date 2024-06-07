@@ -53,9 +53,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',
     'phonenumber_field',
+    'rest_framework',
 
+    'api.apps.ApiConfig',
     'base.apps.BaseConfig',
     'employee.apps.EmployeeConfig',
 ]
