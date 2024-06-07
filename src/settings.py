@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'phonenumber_field',
 
     'base.apps.BaseConfig',
     'employee.apps.EmployeeConfig',
@@ -141,3 +142,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# User configuration
+AUTH_USER_MODEL = 'employee.Employee'
