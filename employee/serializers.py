@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework.serializers import ModelSerializer
 
 from employee.models import Employee
@@ -10,3 +11,8 @@ class EmployeeSerializers(ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True}
         }
+
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+
+        return super().create(validated_data)
