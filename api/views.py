@@ -4,15 +4,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from employee.permission import HasPosition, IsCustomer
 from task.models import Task
-from task.permission import CreateTaskOnlyCustomerPermission
 from task.serializers import TaskSerializers
 
 
 class CreateTaskView(APIView):
     permission_classes = (
         IsAuthenticated,
-        CreateTaskOnlyCustomerPermission
+        IsCustomer
     )
     serializer_class = TaskSerializers
 
@@ -33,8 +33,12 @@ class CreateTaskView(APIView):
 class GetTaskView(ListAPIView):
     permission_classes = (
         IsAuthenticated,
+        HasPosition
     )
     serializer_class = TaskSerializers
 
     def get_queryset(self):
-        return Task.objects.filter(customer=self.request.user)
+        if self.request.user.position == 'CUS':
+            return Task.objects.filter(customer=self.request.user)
+
+        return Task.objects.filter(executor=None)
