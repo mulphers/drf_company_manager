@@ -1,7 +1,8 @@
 from django.urls import include, path, re_path
 
 from api.employee_views import GetCurrentUser
-from api.task_views import AssignTaskView, CreateTaskView, GetTaskView
+from api.task_views import (AssignTaskView, CreateTaskView,
+                            GetAssignedTaskView, GetTaskView)
 
 app_name = 'api'
 
@@ -13,7 +14,7 @@ urlpatterns = [
 
     path('task/get/', GetTaskView.as_view()),
     path('task/assign/', AssignTaskView.as_view()),
-    # path('task/get_assigned/', ...),
+    path('task/get_assigned/', GetAssignedTaskView.as_view()),
     path('task/create/', CreateTaskView.as_view()),
     # path('task/update/', ...),
     # path('task/delete/', ...),

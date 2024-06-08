@@ -66,3 +66,14 @@ class AssignTaskView(APIView):
         task.save()
 
         return Response(self.serializer_class(task).data, status=status.HTTP_200_OK)
+
+
+class GetAssignedTaskView(ListAPIView):
+    permission_classes = (
+        IsAuthenticated,
+        IsExecutor,
+    )
+    serializer_class = TaskSerializers
+
+    def get_queryset(self):
+        return Task.objects.filter(executor=self.request.user)
