@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 
 from employee.permission import HasPosition, IsCustomer, IsExecutor
 from task.models import Task, TaskStatus
+from task.permission import IsOwner
 from task.serializers import TaskSerializers
 
 
@@ -53,6 +54,8 @@ class AssignTaskView(APIView):
     serializer_class = TaskSerializers
 
     def post(self, request):
+        # TODO: Transfer business logic to another module
+
         try:
             task = Task.objects.get(pk=request.data['task_id'])
         except ObjectDoesNotExist:
@@ -77,3 +80,36 @@ class GetAssignedTaskView(ListAPIView):
 
     def get_queryset(self):
         return Task.objects.filter(executor=self.request.user)
+
+
+class UpdateTaskView(APIView):
+    permission_classes = (
+        IsAuthenticated,
+        IsExecutor,
+        IsOwner,
+    )
+    serializer_class = TaskSerializers
+
+    def post(self, request):
+        # TODO: Transfer business logic to another module
+
+        try:
+            task = Task.objects.get(pk=request.data['task_id'])
+        except ObjectDoesNotExist:
+            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if task_status := request.data.get('status'):
+            task.status = task_status
+
+        if report := request.data.get('report'):
+            task.report = report
+
+        if request.data.get('status') == 'REL' and request.data.get('report') is None:
+            return Response(
+                {"error": "When closing a task, it must contain a report"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        task.save()
+
+        return Response(self.serializer_class(task).data, status=status.HTTP_200_OK)
