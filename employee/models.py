@@ -12,8 +12,9 @@ class EmployeePosition(models.TextChoices):
 
 
 class Employee(AbstractUser, ModelWithTime):
+    email = models.EmailField(_("email_address"), null=False)
     phone_number = PhoneNumberField()
-    position = models.CharField(max_length=3, choices=EmployeePosition.choices, default=None)
+    position = models.CharField(max_length=3, choices=EmployeePosition.choices, null=True, default=None)
     access_to_all_tasks = models.BooleanField(default=False)
 
     class Meta:
