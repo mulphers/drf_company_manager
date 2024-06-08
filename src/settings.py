@@ -53,8 +53,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'djoser',
     'phonenumber_field',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'api.apps.ApiConfig',
     'base.apps.BaseConfig',
@@ -148,6 +150,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
 
 # User configuration
 AUTH_USER_MODEL = 'employee.Employee'
