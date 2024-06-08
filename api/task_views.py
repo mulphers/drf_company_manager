@@ -1,18 +1,19 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from employee.permission import HasPosition, IsCustomer
-from task.models import Task
+from employee.permission import HasPosition, IsCustomer, IsExecutor
+from task.models import Task, TaskStatus
 from task.serializers import TaskSerializers
 
 
 class CreateTaskView(APIView):
     permission_classes = (
         IsAuthenticated,
-        IsCustomer
+        IsCustomer,
     )
     serializer_class = TaskSerializers
 
@@ -33,7 +34,7 @@ class CreateTaskView(APIView):
 class GetTaskView(ListAPIView):
     permission_classes = (
         IsAuthenticated,
-        HasPosition
+        HasPosition,
     )
     serializer_class = TaskSerializers
 
@@ -42,3 +43,26 @@ class GetTaskView(ListAPIView):
             return Task.objects.filter(customer=self.request.user)
 
         return Task.objects.filter(executor=None)
+
+
+class AssignTaskView(APIView):
+    permission_classes = (
+        IsAuthenticated,
+        IsExecutor,
+    )
+    serializer_class = TaskSerializers
+
+    def post(self, request):
+        try:
+            task = Task.objects.get(pk=request.data['task_id'])
+        except ObjectDoesNotExist:
+            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if task.executor is not None:
+            return Response({"error": "Task is already assigned"}, status=status.HTTP_400_BAD_REQUEST)
+
+        task.executor = request.user
+        task.status = TaskStatus.in_process
+        task.save()
+
+        return Response(self.serializer_class(task).data, status=status.HTTP_200_OK)
