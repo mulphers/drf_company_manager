@@ -1,15 +1,18 @@
-from django.urls import include, path, re_path
+from django.urls import path
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
-from api.employee_views import GetCurrentUser
+from api.employee_views import CreateEmployeeView, GetCurrentUser
 from api.task_views import (AssignTaskView, CloseTaskView, CreateTaskView,
                             GetAssignedTaskView, GetTaskView, UpdateTaskView)
 
 app_name = 'api'
 
 urlpatterns = [
-    path(r'auth/', include('djoser.urls')),
-    re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('token/', TokenObtainPairView.as_view()),
+    path('token/refresh/', TokenRefreshView.as_view()),
 
+    path('employee/create/', CreateEmployeeView.as_view()),
     path('employee/current/', GetCurrentUser.as_view()),
 
     path('task/get/', GetTaskView.as_view()),
