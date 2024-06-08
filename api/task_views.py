@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -7,7 +8,7 @@ from rest_framework.views import APIView
 
 from employee.permission import HasPosition, IsCustomer, IsExecutor
 from task.models import Task, TaskStatus
-from task.permission import IsExecutorOwner
+from task.permission import IsExecutorOwner, IsNotRealizedTask
 from task.serializers import TaskSerializers
 
 
@@ -87,6 +88,7 @@ class UpdateTaskView(APIView):
         IsAuthenticated,
         IsExecutor,
         IsExecutorOwner,
+        IsNotRealizedTask,
     )
     serializer_class = TaskSerializers
 
@@ -98,17 +100,38 @@ class UpdateTaskView(APIView):
         except ObjectDoesNotExist:
             return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        if task_status := request.data.get('status'):
-            task.status = task_status
-
         if report := request.data.get('report'):
             task.report = report
 
-        if request.data.get('status') == 'REL' and request.data.get('report') is None:
+        task.save()
+
+        return Response(self.serializer_class(task).data, status=status.HTTP_200_OK)
+
+
+class CloseTaskView(APIView):
+    permission_classes = (
+        IsAuthenticated,
+        IsExecutor,
+        IsExecutorOwner,
+    )
+    serializer_class = TaskSerializers
+
+    def post(self, request):
+        # TODO: Transfer business logic to another module
+
+        try:
+            task = Task.objects.get(pk=request.data['task_id'])
+        except ObjectDoesNotExist:
+            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if not task.report:
             return Response(
                 {"error": "When closing a task, it must contain a report"},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        task.status = 'REL'
+        task.closed_ad = timezone.now()
 
         task.save()
 
