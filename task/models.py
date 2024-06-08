@@ -10,7 +10,6 @@ class Task(ModelWithTime):
     customer = models.ForeignKey(
         to=Employee,
         on_delete=models.DO_NOTHING,
-        null=True,
         related_name='customer_tasks'
     )
     executor = models.ForeignKey(
