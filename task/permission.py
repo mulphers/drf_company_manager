@@ -15,7 +15,6 @@ class IsExecutorOwner(BasePermission):
 class IsNotRealizedTask(BasePermission):
     def has_permission(self, request, view):
         try:
-            print(TaskStatus.realized)
             return Task.objects.get(pk=request.data.get('task_id')).status != TaskStatus.realized
         except ObjectDoesNotExist:
             return False
