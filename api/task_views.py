@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from employee.permission import HasPosition, IsCustomer, IsExecutor
 from task.models import Task, TaskStatus
-from task.permission import IsOwner
+from task.permission import IsExecutorOwner
 from task.serializers import TaskSerializers
 
 
@@ -86,7 +86,7 @@ class UpdateTaskView(APIView):
     permission_classes = (
         IsAuthenticated,
         IsExecutor,
-        IsOwner,
+        IsExecutorOwner,
     )
     serializer_class = TaskSerializers
 
