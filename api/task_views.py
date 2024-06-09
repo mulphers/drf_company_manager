@@ -1,15 +1,14 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
-from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from employee.permission import HasPosition, IsCustomer, IsExecutor
-from task.models import Task, TaskStatus
-from task.permission import IsExecutorOwner, IsNotRealizedTask
+from employee.permission import IsCustomer, IsExecutor
+from task.permission import (IsExecutorOwner, IsNotRealizedTask,
+                             IsTaskWithoutExecutor)
 from task.serializers import TaskSerializers
+from task.services import (assign_task, close_task, create_task, get_all_task,
+                           get_assigned_task, set_customer_to_task,
+                           update_task)
 
 
 class CreateTaskView(APIView):
@@ -20,17 +19,12 @@ class CreateTaskView(APIView):
     serializer_class = TaskSerializers
 
     def post(self, request):
-        data = request.data.copy()
-        data['customer'] = request.user.id
+        data = set_customer_to_task(
+            data=request.data.copy(),
+            user=request.user
+        )
 
-        serializer = self.serializer_class(data=data)
-
-        if serializer.is_valid():
-            serializer.save()
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return create_task(serializer=self.serializer_class(data=data))
 
 
 class GetTaskView(ListAPIView):
@@ -40,41 +34,23 @@ class GetTaskView(ListAPIView):
     serializer_class = TaskSerializers
 
     def get_queryset(self):
-        if self.request.user.access_to_all_tasks:
-            return Task.objects.all()
-
-        elif self.request.user.position == 'CUS':
-            return Task.objects.filter(customer=self.request.user)
-
-        elif self.request.user.position == 'EXC':
-            return Task.objects.filter(executor=None)
-
-        return []
+        return get_all_task(user=self.request.user)
 
 
 class AssignTaskView(APIView):
     permission_classes = (
         IsAuthenticated,
         IsExecutor,
+        IsTaskWithoutExecutor
     )
     serializer_class = TaskSerializers
 
     def post(self, request):
-        # TODO: Transfer business logic to another module
-
-        try:
-            task = Task.objects.get(pk=request.data['task_id'])
-        except ObjectDoesNotExist:
-            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        if task.executor is not None:
-            return Response({"error": "Task is already assigned"}, status=status.HTTP_400_BAD_REQUEST)
-
-        task.executor = request.user
-        task.status = TaskStatus.in_process
-        task.save()
-
-        return Response(self.serializer_class(task).data, status=status.HTTP_200_OK)
+        return assign_task(
+            task_id=request.data.get('task_id'),
+            user=request.user,
+            serializer_class=self.serializer_class
+        )
 
 
 class GetAssignedTaskView(ListAPIView):
@@ -85,7 +61,7 @@ class GetAssignedTaskView(ListAPIView):
     serializer_class = TaskSerializers
 
     def get_queryset(self):
-        return Task.objects.filter(executor=self.request.user)
+        return get_assigned_task(user=self.request.user)
 
 
 class UpdateTaskView(APIView):
@@ -98,19 +74,11 @@ class UpdateTaskView(APIView):
     serializer_class = TaskSerializers
 
     def post(self, request):
-        # TODO: Transfer business logic to another module
-
-        try:
-            task = Task.objects.get(pk=request.data['task_id'])
-        except ObjectDoesNotExist:
-            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        if report := request.data.get('report'):
-            task.report = report
-
-        task.save()
-
-        return Response(self.serializer_class(task).data, status=status.HTTP_200_OK)
+        return update_task(
+            task_id=request.data['task_id'],
+            report=request.data.get('report'),
+            serializer_class=self.serializer_class
+        )
 
 
 class CloseTaskView(APIView):
@@ -122,22 +90,7 @@ class CloseTaskView(APIView):
     serializer_class = TaskSerializers
 
     def post(self, request):
-        # TODO: Transfer business logic to another module
-
-        try:
-            task = Task.objects.get(pk=request.data['task_id'])
-        except ObjectDoesNotExist:
-            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        if not task.report:
-            return Response(
-                {"error": "When closing a task, it must contain a report"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        task.status = 'REL'
-        task.closed_ad = timezone.now()
-
-        task.save()
-
-        return Response(self.serializer_class(task).data, status=status.HTTP_200_OK)
+        return close_task(
+            task_id=request.data.get('task_id'),
+            serializer_class=self.serializer_class
+        )
