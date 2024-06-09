@@ -62,8 +62,11 @@ http://127.0.0.1:8080
     - `password` (строка): Пароль сотрудника.
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![1_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/1_headers.png)
     - **Параметры:**
+![1_body](https://github.com/mulphers/drf_company_manager/blob/master/images/1_body.png)
     - **Ответ:**
+![1_response](https://github.com/mulphers/drf_company_manager/blob/master/images/1_response.png)
 
 ### 2. Генерация токена
 
