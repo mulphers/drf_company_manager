@@ -80,8 +80,11 @@ http://127.0.0.1:8080
     - `password` (строка): Пароль сотрудника.
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![2_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/2_headers.png)
     - **Параметры:**
+![2_body](https://github.com/mulphers/drf_company_manager/blob/master/images/2_body.png)
     - **Ответ:**
+![2_response](https://github.com/mulphers/drf_company_manager/blob/master/images/2_response.png)
 
 ### 3. Обновление токена
 
@@ -94,8 +97,11 @@ http://127.0.0.1:8080
     - `refresh` (строка): Токен обновления.
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![3_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/3_headers.png)
     - **Параметры:**
+![3_body](https://github.com/mulphers/drf_company_manager/blob/master/images/3_body.png)
     - **Ответ:**
+![3_response](https://github.com/mulphers/drf_company_manager/blob/master/images/3_response.png)
 
 ### 4. Текущий сотрудник
 
@@ -108,8 +114,11 @@ http://127.0.0.1:8080
     - Нет
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![4_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/4_headers.png)
     - **Параметры:**
+![4_body](https://github.com/mulphers/drf_company_manager/blob/master/images/4_body.png)
     - **Ответ:**
+![4_response](https://github.com/mulphers/drf_company_manager/blob/master/images/4_response.png)
 
 ### 5. Все задачи
 
@@ -124,8 +133,11 @@ http://127.0.0.1:8080
     - Нет
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![5_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/5_headers.png)
     - **Параметры:**
+![5_body](https://github.com/mulphers/drf_company_manager/blob/master/images/5_body.png)
     - **Ответ:**
+![5_response](https://github.com/mulphers/drf_company_manager/blob/master/images/5_response.png)
 
 ### 6. Назначить задачу
 
@@ -138,8 +150,11 @@ http://127.0.0.1:8080
     - `task_id` (целое число): ID задачи.
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![6_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/6_headers.png)
     - **Параметры:**
+![6_body](https://github.com/mulphers/drf_company_manager/blob/master/images/6_body.png)
     - **Ответ:**
+![6_response](https://github.com/mulphers/drf_company_manager/blob/master/images/6_response.png)
 
 ### 7. Назначенные задачи
 
@@ -152,8 +167,11 @@ http://127.0.0.1:8080
     - Нет
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![7_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/7_headers.png)
     - **Параметры:**
+![7_body](https://github.com/mulphers/drf_company_manager/blob/master/images/7_body.png)
     - **Ответ:**
+![7_response](https://github.com/mulphers/drf_company_manager/blob/master/images/7_response.png)
 
 ### 8. Создание задачи
 
@@ -167,8 +185,11 @@ http://127.0.0.1:8080
     - `description` (строка): Описание задачи.
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![8_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/8_headers.png)
     - **Параметры:**
+![8_body](https://github.com/mulphers/drf_company_manager/blob/master/images/8_body.png)
     - **Ответ:**
+![8_response](https://github.com/mulphers/drf_company_manager/blob/master/images/8_response.png)
 
 ### 9. Обновление задачи
 
@@ -182,8 +203,11 @@ http://127.0.0.1:8080
     - `report` (файл): Отчет к заданию.
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![9_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/9_headers.png)
     - **Параметры:**
+![9_body](https://github.com/mulphers/drf_company_manager/blob/master/images/9_body.png)
     - **Ответ:**
+![9_response](https://github.com/mulphers/drf_company_manager/blob/master/images/9_response.png)
 
 ### 10. Закрытие задачи
 
@@ -196,5 +220,8 @@ http://127.0.0.1:8080
     - `task_id` (целое число): ID задачи для закрытия.
 - **Скриншоты из Postman:**
     - **Заголовки:**
+![10_headers](https://github.com/mulphers/drf_company_manager/blob/master/images/10_headers.png)
     - **Параметры:**
+![10_body](https://github.com/mulphers/drf_company_manager/blob/master/images/10_body.png)
     - **Ответ:**
+![10_response](https://github.com/mulphers/drf_company_manager/blob/master/images/10_response.png)
