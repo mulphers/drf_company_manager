@@ -18,3 +18,11 @@ class IsNotRealizedTask(BasePermission):
             return Task.objects.get(pk=request.data.get('task_id')).status != TaskStatus.realized
         except ObjectDoesNotExist:
             return False
+
+
+class IsTaskWithoutExecutor(BasePermission):
+    def has_permission(self, request, view):
+        try:
+            return Task.objects.get(pk=request.data.get('task_id')).executor is None
+        except ObjectDoesNotExist:
+            return False
