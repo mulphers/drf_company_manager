@@ -22,7 +22,3 @@ urlpatterns = [
     path('task/update/', UpdateTaskView.as_view()),
     path('task/close/', CloseTaskView.as_view()),
 ]
-
-# TODO: 4. Transfer business logic to another module
-# TODO: 5. Write Docker/docker-compose file
-# TODO: 6. Write README file
