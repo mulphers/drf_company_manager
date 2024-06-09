@@ -36,15 +36,20 @@ class CreateTaskView(APIView):
 class GetTaskView(ListAPIView):
     permission_classes = (
         IsAuthenticated,
-        HasPosition,
     )
     serializer_class = TaskSerializers
 
     def get_queryset(self):
-        if self.request.user.position == 'CUS':
+        if self.request.user.access_to_all_tasks:
+            return Task.objects.all()
+
+        elif self.request.user.position == 'CUS':
             return Task.objects.filter(customer=self.request.user)
 
-        return Task.objects.filter(executor=None)
+        elif self.request.user.position == 'EXC':
+            return Task.objects.filter(executor=None)
+
+        return []
 
 
 class AssignTaskView(APIView):
