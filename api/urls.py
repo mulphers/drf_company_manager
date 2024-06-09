@@ -15,10 +15,14 @@ urlpatterns = [
     path('employee/create/', CreateEmployeeView.as_view()),
     path('employee/current/', GetCurrentUser.as_view()),
 
-    path('task/get/', GetTaskView.as_view()),
+    path('task/get_all/', GetTaskView.as_view()),
     path('task/assign/', AssignTaskView.as_view()),
     path('task/get_assigned/', GetAssignedTaskView.as_view()),
     path('task/create/', CreateTaskView.as_view()),
     path('task/update/', UpdateTaskView.as_view()),
     path('task/close/', CloseTaskView.as_view()),
 ]
+
+# TODO: 4. Transfer business logic to another module
+# TODO: 5. Write Docker/docker-compose file
+# TODO: 6. Write README file
