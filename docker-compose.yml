@@ -1,0 +1,51 @@
+version: '3.1'
+
+services:
+  application:
+    build: .
+    restart: always
+    container_name: application
+    networks:
+      - app_network
+    volumes:
+      - application_data:/usr/src/app/media/
+    depends_on:
+      - database
+    ports:
+      - '8000:8000'
+    command: sh -c 'python manage.py migrate && python manage.py runserver 0.0.0.0:8000'
+
+  database:
+    image: postgres
+    restart: always
+    container_name: database
+    networks:
+      - app_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    env_file:
+      - .env
+    ports:
+      - '5400:5432'
+
+  admin_panel:
+    image: adminer
+    restart: always
+    container_name: admin_panel
+    networks:
+      - app_network
+    depends_on:
+      - database
+    ports:
+      - '8080:8080'
+
+networks:
+  app_network: null
+
+volumes:
+  application_data: null
+  postgres_data: null
