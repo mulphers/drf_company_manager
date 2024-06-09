@@ -6,6 +6,13 @@ from rest_framework.response import Response
 from task.models import Task, TaskStatus
 
 
+def _find_task(task_id):
+    try:
+        return Task.objects.get(pk=task_id)
+    except ObjectDoesNotExist:
+        return None
+
+
 def set_customer_to_task(data, user):
     data['customer'] = user.id
 
@@ -22,9 +29,9 @@ def create_task(serializer):
 
 
 def update_task(task_id, report, serializer_class):
-    try:
-        task = Task.objects.get(pk=task_id)
-    except ObjectDoesNotExist:
+    task = _find_task(task_id=task_id)
+
+    if task is None:
         return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if report:
@@ -36,9 +43,9 @@ def update_task(task_id, report, serializer_class):
 
 
 def close_task(task_id, serializer_class):
-    try:
-        task = Task.objects.get(pk=task_id)
-    except ObjectDoesNotExist:
+    task = _find_task(task_id=task_id)
+
+    if task is None:
         return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
     if not task.report:
@@ -56,9 +63,9 @@ def close_task(task_id, serializer_class):
 
 
 def assign_task(task_id, user, serializer_class):
-    try:
-        task = Task.objects.get(pk=task_id)
-    except ObjectDoesNotExist:
+    task = _find_task(task_id=task_id)
+
+    if task is None:
         return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
 
     task.executor = user
